@@ -1,0 +1,70 @@
+{
+  "mode": "frozen_contract_audit",
+  "contracts": {
+    "fixed_test_donor_depth": [
+      {
+        "path": "REPLACE_WITH/fixed_test_gate.json",
+        "format": "json",
+        "expected": {
+          "positive_claim_gate": "PASS_FIXED_TEST_DEPTH_IMPROVEMENT"
+        }
+      },
+      {
+        "path": "REPLACE_WITH/fixed_test_donor_scaling_results.tsv",
+        "format": "tsv",
+        "required_columns": [
+          "outer_fold_id",
+          "k_train_pairs",
+          "program_direction_agreement",
+          "program_NES_spearman"
+        ],
+        "min_rows": 1235
+      }
+    ],
+    "known_truth": [
+      {
+        "path": "REPLACE_WITH/simulation_benchmark_results.tsv",
+        "format": "tsv",
+        "min_rows": 1680
+      }
+    ],
+    "cell_estimability": [
+      {
+        "path": "REPLACE_WITH/cell_estimability_by_configuration.tsv",
+        "format": "tsv",
+        "min_rows": 112
+      }
+    ],
+    "ranker": [
+      {
+        "path": "REPLACE_WITH/ranker_block_bootstrap_intervals.tsv",
+        "format": "tsv",
+        "min_rows": 3
+      }
+    ],
+    "spatial": [
+      {
+        "path": "REPLACE_WITH/Fig6B_source_data.tsv",
+        "format": "tsv",
+        "min_rows": 1
+      }
+    ],
+    "external_transfer": [
+      {
+        "path": "REPLACE_WITH/GSE328048_external_transfer_metrics.tsv",
+        "format": "tsv",
+        "required_columns": [
+          "ontology",
+          "nes_spearman",
+          "nes_sign_agreement"
+        ],
+        "min_rows": 3
+      },
+      {
+        "path": "REPLACE_WITH/GSE328048_LODO_program_stability.tsv",
+        "format": "tsv",
+        "min_rows": 60
+      }
+    ]
+  }
+}

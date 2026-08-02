@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:itchevi:schema:qualification-output:0.4.0",
+  "title": "ItchEvi qualification output",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["entity_id", "claim_id", "claim_text", "target_direction", "support", "conflict", "coverage", "discovery_gate_pass", "final_class", "terminal_code", "boundary_codes"],
+    "properties": {
+      "entity_id": {"type": "string"},
+      "claim_id": {"type": "string"},
+      "claim_text": {"type": "string"},
+      "target_direction": {"type": ["integer", "null"]},
+      "support": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+      "conflict": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+      "coverage": {"type": "number", "minimum": 0, "maximum": 1},
+      "discovery_gate_pass": {"type": "boolean"},
+      "final_class": {"enum": ["QUALIFIED", "QUALIFIED_WITH_BOUNDARY", "DESCRIPTIVE_ONLY", "ABSTAIN", "NOT_QUALIFIED"]},
+      "terminal_code": {"type": "string"},
+      "boundary_codes": {"type": "string"}
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:itchevi:schema:run-manifest:0.4.0",
+  "title": "ItchEvi run manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["run_id", "status", "exit_status", "failure_code", "itchevi_version", "started_utc", "finished_utc", "wall_time_seconds", "python_tracemalloc_peak_bytes", "entry_point", "random_seed", "parallelism", "retry_count", "checkpoint_id", "environment", "environment_fingerprint_sha256", "inputs", "outputs"],
+  "properties": {
+    "run_id": {"type": "string"},
+    "status": {"enum": ["PASS", "FAILED"]},
+    "exit_status": {"type": "integer"},
+    "failure_code": {"type": "string"},
+    "failure_detail": {"type": "string"},
+    "itchevi_version": {"type": "string"},
+    "started_utc": {"type": "string", "format": "date-time"},
+    "finished_utc": {"type": "string", "format": "date-time"},
+    "wall_time_seconds": {"type": "number", "minimum": 0},
+    "python_tracemalloc_peak_bytes": {"type": "integer", "minimum": 0},
+    "entry_point": {"type": "string"},
+    "random_seed": {"type": ["integer", "null"]},
+    "parallelism": {"type": "integer", "minimum": 1},
+    "retry_count": {"type": "integer", "minimum": 0},
+    "checkpoint_id": {"type": "string"},
+    "environment": {
+      "type": "object",
+      "required": ["python", "implementation", "platform", "packages"],
+      "properties": {
+        "python": {"type": "string"},
+        "implementation": {"type": "string"},
+        "platform": {"type": "string"},
+        "packages": {"type": "object", "additionalProperties": {"type": "string"}}
+      }
+    },
+    "environment_fingerprint_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "inputs": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^MISSING$|^[0-9a-f]{64}$"}},
+    "outputs": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "summary": {"type": "object"}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "PASS"}}}, "then": {"required": ["summary"]}},
+    {"if": {"properties": {"status": {"const": "FAILED"}}}, "then": {"required": ["failure_detail"]}}
+  ]
+}

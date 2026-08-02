@@ -1,0 +1,39 @@
+configfile: "config.json"
+
+PHASE = config["phase_root"]
+
+rule all:
+    input:
+        PHASE + "/06_external_transfer/GSE328048_external_transfer_gate.json"
+
+rule read_pseudobulk:
+    input:
+        config["inputs"]["sample_manifest"],
+        config["inputs"]["download_receipts"]
+    output:
+        PHASE + "/04_read_gate/GSE328048_read_gate.json",
+        PHASE + "/05_pseudobulk/GSE328048_donor_condition_pseudobulk_counts.tsv.gz",
+        PHASE + "/05_pseudobulk/GSE328048_donor_condition_metadata.tsv"
+    shell:
+        "python -m itchevi.cli read --config workflow/config.json"
+
+rule paired_edger:
+    input:
+        PHASE + "/05_pseudobulk/GSE328048_donor_condition_pseudobulk_counts.tsv.gz",
+        PHASE + "/05_pseudobulk/GSE328048_donor_condition_metadata.tsv"
+    output:
+        PHASE + "/05_pseudobulk/GSE328048_paired_whole_skin_edgeR_QLF.tsv"
+    shell:
+        "python -m itchevi.cli edger --config workflow/config.json"
+
+rule score_transfer:
+    input:
+        PHASE + "/05_pseudobulk/GSE328048_paired_whole_skin_edgeR_QLF.tsv",
+        config["inputs"]["hallmark"],
+        config["inputs"]["go_bp"],
+        config["inputs"]["reactome"]
+    output:
+        PHASE + "/06_external_transfer/GSE328048_external_transfer_gate.json"
+    shell:
+        "python -m itchevi.cli score --config workflow/config.json"
+

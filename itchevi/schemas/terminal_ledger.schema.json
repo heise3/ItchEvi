@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:itchevi:schema:terminal-ledger:0.4.0",
+  "title": "ItchEvi terminal ledger",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["entity_id", "layer_id", "requirement", "layer_weight", "record_id", "dataset_id", "evidence_role", "statistical_unit", "paired_or_descriptive", "n_independent_units", "quality_multiplier", "terminal_state", "failure_code", "gate_status", "source_confidence", "input_sha256", "config_sha256", "software_version", "synthetic_missing_receipt"],
+    "properties": {
+      "entity_id": {"type": "string"},
+      "layer_id": {"type": "string"},
+      "requirement": {"enum": ["critical", "required", "optional"]},
+      "layer_weight": {"type": "number", "minimum": 0},
+      "record_id": {"type": "string"},
+      "dataset_id": {"type": "string"},
+      "evidence_role": {"enum": ["construction", "evaluation", "optional_context", "negative_control"]},
+      "statistical_unit": {"type": "string"},
+      "paired_or_descriptive": {"enum": ["paired_inferential", "unpaired_inferential", "descriptive"]},
+      "n_independent_units": {"type": "integer", "minimum": 0},
+      "quality_multiplier": {"type": "number", "minimum": 0, "maximum": 1},
+      "terminal_state": {"enum": ["OBSERVED", "MISSING", "FAILED", "NOT_APPLICABLE"]},
+      "failure_code": {"type": "string"},
+      "gate_status": {"enum": ["PASS", "WEAK", "FAIL", "NOT_TESTED", ""]},
+      "source_confidence": {"enum": ["high", "medium", "low", "unresolved"]},
+      "input_sha256": {"type": "string", "pattern": "^$|^[0-9a-f]{64}$"},
+      "config_sha256": {"type": "string", "pattern": "^$|^[0-9a-f]{64}$"},
+      "software_version": {"type": "string"},
+      "synthetic_missing_receipt": {"type": "boolean"}
+    }
+  }
+}

@@ -1,0 +1,14 @@
+test_id	module	status	runner	evidence	claim_boundary
+T001	qualification decision branches	PASS	wheel and container unittest	Critical failure missing discovery stability coverage and conflict paths tested	Synthetic and contract-level only
+T002	missing and failure semantics	PASS	wheel and container unittest	Non-observed numeric values rejected and missing records synthesized explicitly	Does not validate upstream biological computations
+T003	CLI and Python API	PASS	Python 3.11 and 3.12	Semantic output hashes are identical	Run manifests differ by expected provenance fields
+T004	JSON Schemas	PASS	jsonschema Draft 2020-12	Seven metaschemas and instances passed	Schema validity is not biological validity
+T005	TSV-to-JSON normalization	PASS	Python 3.11 Python 3.12 and Docker	Typed schema-valid JSON and null missing semantics passed	Does not infer missing evidence
+T006	legacy Cell Ranger reader	PASS	four accepted environments	Toy MTX count and duplicate-symbol contract passed	Technical reader test only
+T007	wheel installation	PASS	fresh Python 3.11 and 3.12 environments	24 tests passed per version with pip check	One Windows host
+T008	sdist installation	PASS	fresh Python 3.12 environment	24 tests demo and pip check passed	One Windows host
+T009	package metadata	PASS	twine 6.2.0	Wheel and sdist checks passed	No upload performed
+T010	reproducible wheel build	PASS	two fixed-epoch builds	Wheel SHA256 identical	Single host and toolchain
+T011	reproducible sdist content	PARTIAL	two fixed-epoch builds	Extracted contents identical but archive hashes differ	Not byte-reproducible
+T012	Docker portability	PASS	Docker Desktop Linux engine	Pinned base digest build 24 tests demo normalize and non-root UID passed	Image not pushed; RepoDigest absent
+T013	hosted CI	NOT_RUN	workflow prepared	Python 3.11 and 3.12 matrix with artifacts	No repository created without authorization

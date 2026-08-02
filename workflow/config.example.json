@@ -1,0 +1,19 @@
+{
+  "phase_root": "REPLACE_WITH_PHASE5E_ROOT",
+  "data_root": "REPLACE_WITH_GSE328048_DATA_ROOT",
+  "python": "python",
+  "rscript": "Rscript",
+  "scripts": {
+    "read": "REPLACE_WITH/read_gse328048_build_pseudobulk.py",
+    "edger": "REPLACE_WITH/run_gse328048_paired_edger.R",
+    "score": "REPLACE_WITH/score_gse328048_external_programs.py"
+  },
+  "inputs": {
+    "sample_manifest": "REPLACE_WITH/GSE328048_sample_inclusion_manifest.tsv",
+    "download_receipts": "REPLACE_WITH/GSE328048_download_receipts.tsv",
+    "hallmark": "REPLACE_WITH/MSigDB_Hallmark_2020.tsv",
+    "go_bp": "REPLACE_WITH/GO_Biological_Process_2023.tsv",
+    "reactome": "REPLACE_WITH/external_fixed_programs.gmt"
+  }
+}
+

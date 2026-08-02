@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:itchevi:schema:entities:0.4.0",
+  "title": "ItchEvi entities",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["entity_id", "claim_id", "claim_text", "construction_layer_id", "target_direction"],
+    "properties": {
+      "entity_id": {"type": "string", "minLength": 1},
+      "claim_id": {"type": "string", "minLength": 1},
+      "claim_text": {"type": "string", "minLength": 1},
+      "construction_layer_id": {"type": "string", "minLength": 1},
+      "target_direction": {"oneOf": [{"enum": ["AUTO"]}, {"type": "integer", "enum": [-1, 0, 1]}]}
+    }
+  }
+}

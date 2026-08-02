@@ -1,0 +1,12 @@
+name: itchevi-phase5i-sw
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python=3.12
+  - numpy>=1.26,<3
+  - pandas>=2.2,<3
+  - scipy>=1.13,<2
+  - pip
+  - pip:
+      - .

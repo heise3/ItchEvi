@@ -1,0 +1,13 @@
+.git
+.github
+__pycache__
+*.py[cod]
+*.egg-info
+.venv
+venv
+build
+dist
+ci_demo
+ci_normalized
+*.log
+environment*.lock.txt

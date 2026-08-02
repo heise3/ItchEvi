@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:itchevi:schema:layers:0.4.0",
+  "title": "ItchEvi layer manifest",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["layer_id", "requirement", "weight", "conditional_rule"],
+    "properties": {
+      "layer_id": {"type": "string", "minLength": 1},
+      "requirement": {"enum": ["critical", "required", "optional"]},
+      "weight": {"type": "number", "exclusiveMinimum": 0},
+      "conditional_rule": {"type": "string", "minLength": 1}
+    }
+  }
+}
