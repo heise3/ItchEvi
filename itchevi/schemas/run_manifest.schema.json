@@ -1,12 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:itchevi:schema:run-manifest:0.4.0",
+  "$id": "urn:itchevi:schema:run-manifest:0.5.1",
   "title": "ItchEvi run manifest",
   "type": "object",
   "additionalProperties": false,
-  "required": ["run_id", "status", "exit_status", "failure_code", "itchevi_version", "started_utc", "finished_utc", "wall_time_seconds", "python_tracemalloc_peak_bytes", "entry_point", "random_seed", "parallelism", "retry_count", "checkpoint_id", "environment", "environment_fingerprint_sha256", "inputs", "outputs"],
+  "required": ["run_id", "attempt_id", "previous_attempt_id", "status", "exit_status", "failure_code", "itchevi_version", "started_utc", "finished_utc", "wall_time_seconds", "python_tracemalloc_peak_bytes", "entry_point", "random_seed", "parallelism", "retry_count", "checkpoint_id", "environment", "environment_fingerprint_sha256", "inputs", "outputs"],
   "properties": {
     "run_id": {"type": "string"},
+    "attempt_id": {"type": "string", "minLength": 1},
+    "previous_attempt_id": {"type": ["string", "null"]},
     "status": {"enum": ["PASS", "FAILED"]},
     "exit_status": {"type": "integer"},
     "failure_code": {"type": "string"},

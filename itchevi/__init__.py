@@ -1,6 +1,6 @@
 """ItchEvi portable workflow components."""
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 
 from .api import qualify, validate_inputs
 from .core import qualify_records

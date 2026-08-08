@@ -1,4 +1,4 @@
-# ItchEvi 0.5.0
+# ItchEvi 0.5.1
 
 ItchEvi is a failure-aware qualification engine for donor-level transcriptomic
 evidence. It asks whether a prespecified gene or program claim remains
@@ -8,7 +8,7 @@ zero.
 
 ## Current scope
 
-Version 0.5.0 implements the Phase 5I qualification core and portable input
+Version 0.5.1 implements the Phase 5I qualification core and portable input
 normalization:
 
 - evidence, entity, layer and configuration validation;
@@ -17,6 +17,9 @@ normalization:
 - gate-based `QUALIFIED`, `QUALIFIED_WITH_BOUNDARY`, `DESCRIPTIVE_ONLY`,
   `ABSTAIN` and `NOT_QUALIFIED` decisions;
 - one terminal record per entity-layer pair;
+- per-required-layer independent-unit checks;
+- outcome-independent conditional layers controlled by frozen config flags;
+- required/critical construction-layer enforcement and mandatory SHA256 fields;
 - CLI/API-equivalent execution;
 - provenance-complete success/failure manifests with hashes, timing,
   Python-memory peak, environment fingerprint and execution context;
@@ -24,6 +27,7 @@ normalization:
 - TSV-to-JSON normalization against seven shipped Draft 2020-12 schemas;
 - explicit JSON `null` for missing numeric values, never numeric zero;
 - deterministic normalized JSON across accepted Python versions.
+- immutable, linked attempt receipts under `attempts/<attempt_id>/`.
 
 The previous Cell Ranger reader, frozen-contract audit and legacy external
 stage wrappers are retained. Legacy wrappers still require project-external
@@ -82,6 +86,7 @@ Outputs:
 - `validation.tsv`;
 - `qualification_report.md`;
 - `run_manifest.json`.
+- `attempts/<attempt_id>/run_manifest.json` for immutable execution history.
 
 ## Python API
 
@@ -128,7 +133,7 @@ They are never interpreted as numeric zero.
 python -m unittest discover -s tests -v
 ```
 
-The 24-test suite covers core decisions, missing/failure semantics, validation, JSON
+The 29-test suite covers core decisions, missing/failure semantics, validation, JSON
 Schema metaschema and instance checks, success/failure provenance receipts,
 CLI/API equivalence, deterministic demo outputs, reporting and legacy reader
 compatibility. The accepted wheel was independently tested under Python 3.11

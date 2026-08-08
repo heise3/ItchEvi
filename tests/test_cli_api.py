@@ -1,4 +1,5 @@
 import csv
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -61,6 +62,31 @@ class CliApiTest(unittest.TestCase):
             self.assertEqual(manifest["failure_code"], "ValueError")
             self.assertEqual(manifest["outputs"], {})
             _validate_json_schema("run_manifest.schema.json", manifest)
+
+    def test_retry_receipts_are_immutable_and_linked(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            paths = write_demo_inputs(root / "inputs")
+            output = root / "retry_output"
+            qualify(
+                paths["evidence"], paths["entities"], paths["layers"], paths["config"],
+                output, retry_count=0,
+            )
+            first = sorted((output / "attempts").glob("*/run_manifest.json"))[0]
+            first_bytes = first.read_bytes()
+            first_sha = hashlib.sha256(first_bytes).hexdigest()
+            first_manifest = json.loads(first_bytes)
+            qualify(
+                paths["evidence"], paths["entities"], paths["layers"], paths["config"],
+                output, retry_count=1,
+            )
+            receipts = sorted((output / "attempts").glob("*/run_manifest.json"))
+            self.assertEqual(len(receipts), 2)
+            self.assertEqual(hashlib.sha256(first.read_bytes()).hexdigest(), first_sha)
+            latest = json.loads((output / "run_manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(latest["retry_count"], 1)
+            self.assertEqual(latest["previous_attempt_id"], first_manifest["attempt_id"])
+            self.assertNotEqual(latest["attempt_id"], first_manifest["attempt_id"])
 
     def test_cli_and_api_are_semantically_equivalent(self):
         with tempfile.TemporaryDirectory() as directory:

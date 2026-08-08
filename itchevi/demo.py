@@ -40,7 +40,7 @@ def write_demo_inputs(root: Path) -> dict[str, Path]:
         {"layer_id": "spatial_context", "requirement": "optional", "weight": 1.0, "conditional_rule": "when_available"},
     ]
     entities = [{"entity_id": "P_SYN", "claim_id": "C_SYN", "claim_text": "Synthetic directional program", "construction_layer_id": "discovery_paired", "target_direction": "AUTO"}]
-    config = {"run_id": "synthetic_worked_example", "V_min": 0.8, "S_min": 0.7, "K_max": 0.3, "min_independent_units": 6, "discovery_fdr_max": 0.05, "stability_layer_ids": ["operator_stability"], "boundary_on_optional_missing": True}
+    config = {"run_id": "synthetic_worked_example", "V_min": 0.8, "S_min": 0.7, "K_max": 0.3, "min_independent_units": 6, "discovery_fdr_max": 0.05, "stability_layer_ids": ["operator_stability"], "boundary_on_optional_missing": True, "condition_flags": {}}
     evidence_path = root / "evidence.tsv"
     entities_path = root / "entities.tsv"
     layers_path = root / "layers.tsv"

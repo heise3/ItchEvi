@@ -1,10 +1,10 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:itchevi:schema:qualification-config:0.4.0",
+  "$id": "urn:itchevi:schema:qualification-config:0.5.1",
   "title": "ItchEvi qualification configuration",
   "type": "object",
   "additionalProperties": false,
-  "required": ["run_id", "V_min", "S_min", "K_max", "min_independent_units", "discovery_fdr_max", "stability_layer_ids", "boundary_on_optional_missing"],
+  "required": ["run_id", "V_min", "S_min", "K_max", "min_independent_units", "discovery_fdr_max", "stability_layer_ids", "boundary_on_optional_missing", "condition_flags"],
   "properties": {
     "run_id": {"type": "string", "minLength": 1},
     "V_min": {"type": "number", "minimum": 0, "maximum": 1},
@@ -13,6 +13,11 @@
     "min_independent_units": {"type": "integer", "minimum": 1},
     "discovery_fdr_max": {"type": "number", "minimum": 0, "maximum": 1},
     "stability_layer_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
-    "boundary_on_optional_missing": {"type": "boolean"}
+    "boundary_on_optional_missing": {"type": "boolean"},
+    "condition_flags": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[A-Za-z][A-Za-z0-9_]*$"},
+      "additionalProperties": {"type": "boolean"}
+    }
   }
 }

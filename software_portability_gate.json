@@ -1,48 +1,36 @@
 {
   "project": "ItchEvi",
-  "phase": "Phase 5I-SW3",
-  "date": "2026-08-01",
-  "version": "0.5.0",
-  "status": "PASS_LOCAL_RELEASE_CANDIDATE_WITH_PUBLICATION_GATES",
-  "portable_components": [
-    "qualification core",
-    "input validation",
-    "failure-aware terminal ledger",
-    "CLI and Python API",
-    "TSV-to-normalized-JSON conversion",
-    "seven Draft 2020-12 JSON Schemas",
-    "success and failure provenance manifests",
-    "deterministic synthetic demo",
-    "synthetic runtime and memory scaling benchmark",
-    "wheel and source distribution",
-    "Python 3.11 and 3.12 workflow",
-    "digest-pinned non-root Docker image"
+  "phase": "Phase 5K-R3",
+  "date": "2026-08-08",
+  "version": "0.5.1",
+  "status": "PASS_LOCAL_CONTRACT_PATCH_PENDING_HOSTED_CI",
+  "patched_contracts": [
+    "per-required-layer independent-unit minimum",
+    "outcome-independent conditional layer flags",
+    "required or critical construction layer",
+    "mandatory evidence provenance SHA256",
+    "immutable linked attempt receipts"
   ],
-  "unit_tests_passed_per_environment": 24,
-  "accepted_environments": [
-    "Python 3.11.9 wheel",
-    "Python 3.12.10 wheel",
-    "Python 3.12.10 sdist",
-    "Python 3.11 Docker"
+  "unit_tests_passed_per_environment": 29,
+  "accepted_local_environments": [
+    "Python 3.11 source",
+    "Python 3.12 source",
+    "Python 3.11 installed wheel",
+    "Python 3.12 installed wheel"
   ],
   "unit_tests_failed": 0,
   "unit_tests_skipped": 0,
-  "pip_check": "PASS",
-  "twine_check": "PASS_WHEEL_AND_SDIST",
-  "cli_api_semantic_equivalence": "PASS",
-  "normalized_json_cross_python_hash_equivalence": "PASS",
-  "docker_status": "PASS_LOCAL_BUILD_AND_SMOKE",
-  "docker_non_root_uid": 10001,
-  "hosted_ci_status": "NOT_RUN_NO_REPOSITORY_CREATED",
+  "pip_check": "PASS_BOTH_WHEEL_ENVIRONMENTS",
+  "hosted_ci_status": "PENDING_PATCH_COMMIT",
+  "sdist_status": "NOT_RERUN_FOR_0.5.1",
+  "docker_status": "NOT_RERUN_FOR_0.5.1",
   "public_release_ready": false,
   "public_release_gaps": [
-    "hosted CI has not been executed from a public or private repository",
+    "hosted CI has not yet run for the patch commit",
     "final authors and maintainer contact are unresolved",
-    "repository URL is unresolved",
     "MIT rights-holder confirmation is unresolved",
     "archival DOI is unresolved",
-    "sdist is content-identical but not byte-identical across repeat builds"
+    "public visibility is not authorized"
   ],
-  "external_mapping_status": "SENT_AWAITING_GSE328048_AUTHORITATIVE_MAPPING",
-  "phase5J_status": "NO_GO_PHASE5J_EXTERNAL_PAIRED_RERUN"
+  "gse328048_paired_status": "NO_GO_WITHOUT_AUTHORITATIVE_MAPPING"
 }

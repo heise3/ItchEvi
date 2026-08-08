@@ -3,6 +3,15 @@
 All notable changes to ItchEvi are documented here. The project follows
 semantic versioning after its first public release.
 
+## 0.5.1 - formal-contract patch candidate
+
+- Enforce independent-unit minima across active required layers.
+- Evaluate frozen `flag:<name>` conditional rules.
+- Reject optional or inactive construction layers.
+- Require nonblank evidence provenance hashes.
+- Preserve immutable, linked attempt-level run manifests.
+- Add focused regression tests for all five Phase 5K-R2 concordance findings.
+
 ## 0.5.0 - release candidate
 
 - Added the failure-aware qualification core and terminal ledger.

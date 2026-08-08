@@ -24,7 +24,7 @@ class SchemaTest(unittest.TestCase):
         self.assertTrue(callable(itchevi.qualify))
         self.assertTrue(callable(itchevi.qualify_records))
         self.assertTrue(callable(itchevi.validate_inputs))
-        self.assertEqual(itchevi.__version__, "0.5.0")
+        self.assertEqual(itchevi.__version__, "0.5.1")
 
 
 if __name__ == "__main__":

@@ -1,14 +1,11 @@
 test_id	module	status	runner	evidence	claim_boundary
-T001	qualification decision branches	PASS	wheel and container unittest	Critical failure missing discovery stability coverage and conflict paths tested	Synthetic and contract-level only
-T002	missing and failure semantics	PASS	wheel and container unittest	Non-observed numeric values rejected and missing records synthesized explicitly	Does not validate upstream biological computations
-T003	CLI and Python API	PASS	Python 3.11 and 3.12	Semantic output hashes are identical	Run manifests differ by expected provenance fields
-T004	JSON Schemas	PASS	jsonschema Draft 2020-12	Seven metaschemas and instances passed	Schema validity is not biological validity
-T005	TSV-to-JSON normalization	PASS	Python 3.11 Python 3.12 and Docker	Typed schema-valid JSON and null missing semantics passed	Does not infer missing evidence
-T006	legacy Cell Ranger reader	PASS	four accepted environments	Toy MTX count and duplicate-symbol contract passed	Technical reader test only
-T007	wheel installation	PASS	fresh Python 3.11 and 3.12 environments	24 tests passed per version with pip check	One Windows host
-T008	sdist installation	PASS	fresh Python 3.12 environment	24 tests demo and pip check passed	One Windows host
-T009	package metadata	PASS	twine 6.2.0	Wheel and sdist checks passed	No upload performed
-T010	reproducible wheel build	PASS	two fixed-epoch builds	Wheel SHA256 identical	Single host and toolchain
-T011	reproducible sdist content	PARTIAL	two fixed-epoch builds	Extracted contents identical but archive hashes differ	Not byte-reproducible
-T012	Docker portability	PASS	Docker Desktop Linux engine	Pinned base digest build 24 tests demo normalize and non-root UID passed	Image not pushed; RepoDigest absent
-T013	hosted CI	NOT_RUN	workflow prepared	Python 3.11 and 3.12 matrix with artifacts	No repository created without authorization
+R3T001	formal-contract regression tests	PASS	Python 3.11 and 3.12 source environments	29 of 29 tests passed per version	Synthetic and software-contract level only
+R3T002	wheel installation tests	PASS	fresh Python 3.11 and 3.12 wheel environments	29 of 29 tests passed per version	One Windows host
+R3T003	dependency consistency	PASS	pip check in both wheel environments	No broken requirements	Does not establish biological validity
+R3T004	conditional layer semantics	PASS	focused unit test	False frozen flag excludes critical not-applicable layer	Flags must be frozen before outcomes
+R3T005	independent-unit gate	PASS	focused unit test	Underpowered required layer abstains	Does not define universal donor minimum
+R3T006	construction-layer validation	PASS	focused unit test	Optional construction layer rejected	Configuration contract only
+R3T007	mandatory provenance hashes	PASS	focused unit test	Blank input/config SHA256 rejected	Hash presence does not prove semantic correctness
+R3T008	immutable retry receipts	PASS	API retry test	First attempt hash unchanged and second attempt linked	Root manifest is latest-attempt pointer
+R3T009	hosted CI	PENDING	private patch branch	Not run for patch commit yet	Local matrix is not hosted CI
+R3T010	sdist and Docker	NOT_RERUN	Phase 5K-R3	No 0.5.1 claim made	0.5.0 receipts remain historical only

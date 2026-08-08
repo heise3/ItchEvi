@@ -4,6 +4,7 @@ import csv
 import hashlib
 import importlib.metadata
 import json
+import os
 import platform
 import time
 import tracemalloc
@@ -71,6 +72,42 @@ def _safe_input_hashes(paths: list[Path]) -> dict[str, str]:
     return {str(path.name): sha256(path) if path.is_file() else "MISSING" for path in paths}
 
 
+def _prepare_attempt(
+    output_dir: Path | None,
+    retry_count: int,
+    started_utc: datetime,
+) -> tuple[str, str | None, Path | None]:
+    attempt_id = (
+        f"attempt_{retry_count:04d}_"
+        f"{started_utc.strftime('%Y%m%dT%H%M%S%fZ')}_{os.getpid()}"
+    )
+    if output_dir is None:
+        return attempt_id, None, None
+    attempts_root = output_dir / "attempts"
+    attempts_root.mkdir(parents=True, exist_ok=True)
+    existing = sorted(attempts_root.glob("*/run_manifest.json"))
+    previous_attempt_id = None
+    if existing:
+        previous_attempt_id = json.loads(existing[-1].read_text(encoding="utf-8"))["attempt_id"]
+    attempt_dir = attempts_root / attempt_id
+    attempt_dir.mkdir(exist_ok=False)
+    return attempt_id, previous_attempt_id, attempt_dir
+
+
+def _write_manifest_receipts(
+    output_dir: Path,
+    attempt_dir: Path,
+    manifest: dict[str, Any],
+) -> None:
+    payload = json.dumps(manifest, indent=2) + "\n"
+    attempt_path = attempt_dir / "run_manifest.json"
+    with attempt_path.open("x", encoding="utf-8") as handle:
+        handle.write(payload)
+    # The root manifest is an explicit latest-attempt pointer. Immutable history
+    # remains under attempts/<attempt_id>/run_manifest.json.
+    (output_dir / "run_manifest.json").write_text(payload, encoding="utf-8")
+
+
 def qualify(
     evidence_path: Path,
     entities_path: Path,
@@ -92,6 +129,9 @@ def qualify(
     environment, environment_hash = _environment_snapshot()
     if output_dir is not None:
         output_dir.mkdir(parents=True, exist_ok=True)
+    attempt_id, previous_attempt_id, attempt_dir = _prepare_attempt(
+        output_dir, retry_count, started_utc
+    )
     try:
         config = read_json(config_path)
         run = qualify_records(
@@ -117,6 +157,8 @@ def qualify(
         finished_utc = datetime.now(timezone.utc)
         manifest = {
             "run_id": config["run_id"],
+            "attempt_id": attempt_id,
+            "previous_attempt_id": previous_attempt_id,
             "status": "PASS",
             "exit_status": 0,
             "failure_code": "",
@@ -139,15 +181,16 @@ def qualify(
             },
             "summary": run.summary,
         }
-        (output_dir / "run_manifest.json").write_text(
-            json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
-        )
+        assert attempt_dir is not None
+        _write_manifest_receipts(output_dir, attempt_dir, manifest)
         return run
     except Exception as exc:
         if output_dir is not None:
             _, peak_bytes = tracemalloc.get_traced_memory()
             failure_manifest = {
                 "run_id": config.get("run_id", "UNRESOLVED"),
+                "attempt_id": attempt_id,
+                "previous_attempt_id": previous_attempt_id,
                 "status": "FAILED",
                 "exit_status": 1,
                 "failure_code": type(exc).__name__,
@@ -167,9 +210,8 @@ def qualify(
                 "inputs": _safe_input_hashes(input_paths),
                 "outputs": {},
             }
-            (output_dir / "run_manifest.json").write_text(
-                json.dumps(failure_manifest, indent=2) + "\n", encoding="utf-8"
-            )
+            assert attempt_dir is not None
+            _write_manifest_receipts(output_dir, attempt_dir, failure_manifest)
         raise
     finally:
         tracemalloc.stop()

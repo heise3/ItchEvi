@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use ItchEvi, please cite the software and associated manuscript."
 title: "ItchEvi: failure-aware qualification of donor-level transcriptomic evidence"
 type: software
-version: 0.5.0
+version: 0.5.1
 authors:
   - name: "ItchEvi contributors"
 license: MIT

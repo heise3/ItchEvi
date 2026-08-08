@@ -46,6 +46,53 @@ class QualificationCoreTest(unittest.TestCase):
         self.assertEqual(missing[0]["terminal_state"], "MISSING")
         self.assertTrue(missing[0]["synthetic_missing_receipt"])
         self.assertAlmostEqual(row["coverage"], 2 / 3)
+        self.assertEqual(len(missing[0]["input_sha256"]), 64)
+        self.assertEqual(len(missing[0]["config_sha256"]), 64)
+
+    def test_required_layer_below_independent_unit_minimum_abstains(self):
+        evidence = copy.deepcopy(self.evidence)
+        external = next(row for row in evidence if row["layer_id"] == "external_direction")
+        external["n_independent_units"] = "1"
+        _, row = self.run_one(evidence)
+        self.assertEqual(row["final_class"], "ABSTAIN")
+        self.assertEqual(row["terminal_code"], "ABSTAIN_INSUFFICIENT_EVIDENCE")
+        self.assertIn("INSUFFICIENT_INDEPENDENT_UNITS:external_direction", row["boundary_codes"])
+
+    def test_inactive_conditional_critical_layer_is_excluded(self):
+        evidence = copy.deepcopy(self.evidence)
+        layers = copy.deepcopy(self.layers)
+        config = copy.deepcopy(self.config)
+        external_layer = next(row for row in layers if row["layer_id"] == "external_direction")
+        external_layer["requirement"] = "critical"
+        external_layer["conditional_rule"] = "flag:external_enabled"
+        config["condition_flags"] = {"external_enabled": False}
+        external = next(row for row in evidence if row["layer_id"] == "external_direction")
+        external.update(
+            terminal_state="NOT_APPLICABLE", failure_code="CONDITION_NOT_ACTIVE",
+            effect="", direction="", SE="", P="", FDR="", gate_status="NOT_TESTED",
+        )
+        operator = next(row for row in evidence if row["layer_id"] == "operator_stability")
+        operator.update(effect="0.2", direction="1", quality_multiplier="1.0")
+        run = qualify_records(evidence, self.entities, layers, config)
+        row = run.qualification_rows[0]
+        self.assertEqual(row["final_class"], "QUALIFIED_WITH_BOUNDARY")
+        ledger = next(item for item in run.terminal_ledger if item["layer_id"] == "external_direction")
+        self.assertFalse(ledger["condition_active"])
+
+    def test_optional_construction_layer_rejected(self):
+        layers = copy.deepcopy(self.layers)
+        next(row for row in layers if row["layer_id"] == "discovery_paired")["requirement"] = "optional"
+        rows = validate_objects(self.evidence, self.entities, layers, self.config)
+        self.assertEqual(rows[0]["status"], "FAIL")
+        self.assertTrue(any("construction_layer_id must be critical or required" in row["detail"] for row in rows))
+
+    def test_blank_provenance_hash_rejected(self):
+        evidence = copy.deepcopy(self.evidence)
+        evidence[0]["input_sha256"] = ""
+        evidence[0]["config_sha256"] = ""
+        rows = validate_objects(evidence, self.entities, self.layers, self.config)
+        self.assertEqual(rows[0]["status"], "FAIL")
+        self.assertTrue(any("input_sha256 is required" in row["detail"] for row in rows))
 
     def test_critical_missing_abstains(self):
         evidence = [row for row in self.evidence if row["layer_id"] != "discovery_paired"]
@@ -111,4 +158,3 @@ class QualificationCoreTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

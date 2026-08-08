@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 from collections import Counter
+import hashlib
 from typing import Any
 
 from .models import QualificationRun
-from .validation import assert_valid, validate_objects
+from .validation import assert_valid, condition_is_active, validate_objects
 
 
 def _as_float(value: str) -> float | None:
@@ -16,9 +17,22 @@ def _as_int(value: str) -> int | None:
     return None if number is None else int(number)
 
 
-def _missing_record(entity_id: str, layer_id: str) -> dict[str, str]:
+def _aggregate_sha(values: list[str], fallback: str) -> str:
+    eligible = sorted({value for value in values if value})
+    payload = "|".join(eligible).encode("utf-8") if eligible else fallback.encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _synthetic_record(
+    entity_id: str,
+    layer_id: str,
+    state: str,
+    input_sha256: str,
+    config_sha256: str,
+) -> dict[str, str]:
+    missing = state == "MISSING"
     return {
-        "record_id": f"SYNTH_MISSING::{entity_id}::{layer_id}",
+        "record_id": f"SYNTH_{state}::{entity_id}::{layer_id}",
         "entity_id": entity_id,
         "layer_id": layer_id,
         "dataset_id": "UNAVAILABLE",
@@ -32,11 +46,11 @@ def _missing_record(entity_id: str, layer_id: str) -> dict[str, str]:
         "direction": "",
         "n_independent_units": "0",
         "quality_multiplier": "0",
-        "terminal_state": "MISSING",
-        "failure_code": "UNSCHEDULED_RECORD",
+        "terminal_state": state,
+        "failure_code": "UNSCHEDULED_RECORD" if missing else "CONDITION_NOT_ACTIVE",
         "source_confidence": "unresolved",
-        "input_sha256": "",
-        "config_sha256": "",
+        "input_sha256": input_sha256,
+        "config_sha256": config_sha256,
         "software_version": "itchevi-core",
         "gate_status": "NOT_TESTED",
     }
@@ -51,22 +65,46 @@ def qualify_records(
     validation = validate_objects(evidence, entities, layers, config)
     assert_valid(validation)
     evidence_index = {(row["entity_id"], row["layer_id"]): dict(row) for row in evidence}
-    layer_index = {row["layer_id"]: dict(row) for row in layers}
+    evidence_by_entity: dict[str, list[dict[str, str]]] = {}
+    for row in evidence:
+        evidence_by_entity.setdefault(row["entity_id"], []).append(row)
     ledger: list[dict[str, Any]] = []
     outputs: list[dict[str, Any]] = []
 
     for entity in entities:
         entity_id = entity["entity_id"]
+        entity_records = evidence_by_entity.get(entity_id, [])
+        synthetic_input_sha = _aggregate_sha(
+            [row["input_sha256"] for row in entity_records], f"{entity_id}:input"
+        )
+        synthetic_config_sha = _aggregate_sha(
+            [row["config_sha256"] for row in entity_records], f"{entity_id}:config"
+        )
         resolved: dict[str, dict[str, str]] = {}
+        active_by_layer: dict[str, bool] = {}
         for layer in layers:
             layer_id = layer["layer_id"]
-            record = evidence_index.get((entity_id, layer_id), _missing_record(entity_id, layer_id))
+            condition_active = condition_is_active(layer["conditional_rule"], config)
+            active_by_layer[layer_id] = condition_active
+            fallback_state = "MISSING" if condition_active else "NOT_APPLICABLE"
+            record = evidence_index.get(
+                (entity_id, layer_id),
+                _synthetic_record(
+                    entity_id,
+                    layer_id,
+                    fallback_state,
+                    synthetic_input_sha,
+                    synthetic_config_sha,
+                ),
+            )
             resolved[layer_id] = record
             ledger.append(
                 {
                     "entity_id": entity_id,
                     "layer_id": layer_id,
                     "requirement": layer["requirement"],
+                    "conditional_rule": layer["conditional_rule"],
+                    "condition_active": condition_active,
                     "layer_weight": float(layer["weight"]),
                     "record_id": record["record_id"],
                     "dataset_id": record["dataset_id"],
@@ -83,6 +121,9 @@ def qualify_records(
                     "config_sha256": record["config_sha256"],
                     "software_version": record["software_version"],
                     "synthetic_missing_receipt": record["record_id"].startswith("SYNTH_MISSING::"),
+                    "synthetic_not_applicable_receipt": record["record_id"].startswith(
+                        "SYNTH_NOT_APPLICABLE::"
+                    ),
                 }
             )
 
@@ -92,9 +133,22 @@ def qualify_records(
             if entity["target_direction"] == "AUTO"
             else int(entity["target_direction"])
         )
-        required_layers = [row for row in layers if row["requirement"] in {"critical", "required"}]
-        critical_layers = [row for row in layers if row["requirement"] == "critical"]
-        optional_layers = [row for row in layers if row["requirement"] == "optional"]
+        required_layers = [
+            row
+            for row in layers
+            if row["requirement"] in {"critical", "required"}
+            and active_by_layer[row["layer_id"]]
+        ]
+        critical_layers = [
+            row
+            for row in layers
+            if row["requirement"] == "critical" and active_by_layer[row["layer_id"]]
+        ]
+        optional_layers = [
+            row
+            for row in layers
+            if row["requirement"] == "optional" and active_by_layer[row["layer_id"]]
+        ]
         boundaries: list[str] = []
 
         total_required_weight = sum(float(row["weight"]) for row in required_layers)
@@ -150,6 +204,14 @@ def qualify_records(
             and discovery_fdr is not None
             and discovery_fdr <= float(config["discovery_fdr_max"])
         )
+        insufficient_required_units = [
+            row["layer_id"]
+            for row in required_layers
+            if row["layer_id"] != entity["construction_layer_id"]
+            and resolved[row["layer_id"]]["terminal_state"] == "OBSERVED"
+            and (_as_int(resolved[row["layer_id"]]["n_independent_units"]) or 0)
+            < int(config["min_independent_units"])
+        ]
         stability_failures = [
             layer_id
             for layer_id in config["stability_layer_ids"]
@@ -185,6 +247,9 @@ def qualify_records(
             final_class, terminal_code = "ABSTAIN", "ABSTAIN_DIRECTION_UNDEFINED"
         elif not discovery_pass:
             final_class, terminal_code = "NOT_QUALIFIED", "NOT_QUALIFIED_DISCOVERY_GATE"
+        elif insufficient_required_units:
+            final_class, terminal_code = "ABSTAIN", "ABSTAIN_INSUFFICIENT_EVIDENCE"
+            boundaries.append("INSUFFICIENT_INDEPENDENT_UNITS:" + "|".join(insufficient_required_units))
         elif coverage < float(config["V_min"]):
             final_class, terminal_code = "ABSTAIN", "ABSTAIN_INSUFFICIENT_EVIDENCE"
         elif stability_failures:

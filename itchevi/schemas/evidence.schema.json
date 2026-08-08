@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:itchevi:schema:evidence:0.4.0",
+  "$id": "urn:itchevi:schema:evidence:0.5.1",
   "title": "ItchEvi evidence records",
   "type": "array",
   "items": {
@@ -25,8 +25,8 @@
       "terminal_state": {"enum": ["OBSERVED", "MISSING", "FAILED", "NOT_APPLICABLE"]},
       "failure_code": {"type": "string"},
       "source_confidence": {"enum": ["high", "medium", "low", "unresolved"]},
-      "input_sha256": {"type": "string", "pattern": "^$|^[0-9a-f]{64}$"},
-      "config_sha256": {"type": "string", "pattern": "^$|^[0-9a-f]{64}$"},
+      "input_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+      "config_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
       "software_version": {"type": "string", "minLength": 1},
       "gate_status": {"enum": ["PASS", "WEAK", "FAIL", "NOT_TESTED", ""]}
     }
