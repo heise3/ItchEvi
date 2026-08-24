@@ -1,0 +1,34 @@
+{
+  "title": "ItchEvi: evidence-saturation benchmarking and typed qualification of reproducible lesion programs",
+  "description": "Version 0.5.0 of the ItchEvi failure-aware qualification engine, with versioned schemas and release-linked source-data materials for evidence-saturation benchmarking in paired human skin transcriptomics.",
+  "upload_type": "software",
+  "creators": [
+    {
+      "name": "Liang, Peng",
+      "orcid": "0009-0007-7583-8595",
+      "affiliation": "Graduate Training Base, Wenzhou Medical University; Oujiang Laboratory"
+    },
+    {
+      "name": "Wu, Jie",
+      "affiliation": "Oujiang Laboratory"
+    }
+  ],
+  "version": "0.5.0",
+  "publication_date": "2026-08-24",
+  "license": "MIT",
+  "keywords": [
+    "transcriptomics",
+    "single-cell RNA sequencing",
+    "spatial transcriptomics",
+    "reproducibility",
+    "evidence saturation",
+    "atopic dermatitis"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/heise3/ItchEvi",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}

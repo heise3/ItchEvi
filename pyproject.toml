@@ -9,7 +9,10 @@ description = "Failure-aware qualification of donor-level transcriptomic evidenc
 readme = "README.md"
 requires-python = ">=3.11"
 license = {file = "LICENSE"}
-authors = [{name = "ItchEvi contributors"}]
+authors = [
+  {name = "Peng Liang"},
+  {name = "Jie Wu"}
+]
 keywords = ["bioinformatics", "single-cell", "reproducibility", "qualification"]
 classifiers = [
   "Programming Language :: Python :: 3",

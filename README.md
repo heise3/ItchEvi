@@ -29,6 +29,17 @@ The previous Cell Ranger reader, frozen-contract audit and legacy external
 stage wrappers are retained. Legacy wrappers still require project-external
 scripts and are not part of the portable qualification core.
 
+## Release provenance
+
+The biological analyses reported in the associated manuscript were executed
+against frozen commit `105f4aeb13690a419fa3e9e49f4bc52907e93538`.
+Release `v0.5.0` adds citation and archival metadata only; it does not modify
+the qualification implementation at that commit. Panel-level source tables,
+frozen program banks, figure-generation scripts and their SHA256 manifest are
+attached to the GitHub release.
+
+Repository: https://github.com/heise3/ItchEvi
+
 ## Install
 
 ```bash
@@ -146,3 +157,8 @@ and Python 3.12. Exact accepted dependency snapshots are provided in
   treatment efficacy.
 - The historical evidence-ranker added-value failure is not overwritten by
   this qualification endpoint.
+
+## License
+
+ItchEvi is released under the MIT License. Original public datasets are not
+redistributed and remain subject to their source repositories' terms.

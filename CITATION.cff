@@ -1,11 +1,18 @@
 cff-version: 1.2.0
-message: "If you use ItchEvi, please cite the software and associated manuscript."
-title: "ItchEvi: failure-aware qualification of donor-level transcriptomic evidence"
+message: "If you use ItchEvi, please cite this software release and the associated manuscript."
+title: "ItchEvi: evidence-saturation benchmarking and typed qualification of reproducible lesion programs"
 type: software
 version: 0.5.0
 authors:
-  - name: "ItchEvi contributors"
+  - family-names: "Liang"
+    given-names: "Peng"
+    orcid: "https://orcid.org/0009-0007-7583-8595"
+  - family-names: "Wu"
+    given-names: "Jie"
 license: MIT
+repository-code: "https://github.com/heise3/ItchEvi"
+url: "https://github.com/heise3/ItchEvi/releases/tag/v0.5.0"
+date-released: 2026-08-24
 keywords:
   - single-cell RNA sequencing
   - spatial transcriptomics
