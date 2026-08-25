@@ -17,14 +17,33 @@ jobs:
           repository_id=1320882942
           badge_url="https://zenodo.org/badge/latestdoi/${repository_id}"
           headers="$(mktemp)"
-          curl --fail --silent --show-error --location \
-            --dump-header "$headers" --output /dev/null "$badge_url"
+          curl --silent --show-error --location \
+            --dump-header "$headers" --output /dev/null "$badge_url" || true
           doi="$(awk 'BEGIN { IGNORECASE=1 } /^location:/ { gsub("\\r", ""); print $2 }' "$headers" \
             | grep -Eo '10\.5281/zenodo\.[0-9]+' | tail -n 1 || true)"
           if [[ -z "$doi" ]]; then
-            final_url="$(curl --fail --silent --show-error --location \
-              --output /dev/null --write-out '%{url_effective}' "$badge_url")"
+            final_url="$(curl --silent --show-error --location \
+              --output /dev/null --write-out '%{url_effective}' "$badge_url" || true)"
             doi="$(printf '%s' "$final_url" | grep -Eo '10\.5281/zenodo\.[0-9]+' || true)"
+          fi
+          if [[ -z "$doi" ]]; then
+            search_url='https://zenodo.org/api/records/?q=title%3A%22ItchEvi%22&size=20&sort=newest'
+            search_json="$(mktemp)"
+            curl --fail --silent --show-error "$search_url" --output "$search_json"
+            doi="$(python - "$search_json" <<'PY'
+          import json
+          import sys
+
+          with open(sys.argv[1], encoding="utf-8") as handle:
+              payload = json.load(handle)
+          for hit in payload.get("hits", {}).get("hits", []):
+              title = hit.get("metadata", {}).get("title", "")
+              version = str(hit.get("metadata", {}).get("version", ""))
+              if title.startswith("ItchEvi:") and version == "0.5.0":
+                  print(hit.get("doi", ""))
+                  break
+          PY
+            )"
           fi
           if [[ -z "$doi" ]]; then
             echo "ZENODO_ARCHIVE_NOT_READY"
