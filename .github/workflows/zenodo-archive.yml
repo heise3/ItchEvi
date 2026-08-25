@@ -27,7 +27,7 @@ jobs:
             doi="$(printf '%s' "$final_url" | grep -Eo '10\.5281/zenodo\.[0-9]+' || true)"
           fi
           if [[ -z "$doi" ]]; then
-            search_url='https://zenodo.org/api/records/?q=title%3A%22ItchEvi%22&size=20&sort=newest'
+            search_url='https://zenodo.org/api/records/?q=ItchEvi&size=20&sort=newest'
             search_json="$(mktemp)"
             search_status="$(curl --silent --show-error --location \
               --header 'Accept: application/json' --output "$search_json" \
