@@ -3,6 +3,7 @@ message: "If you use ItchEvi, please cite this software release and the associat
 title: "ItchEvi: evidence-saturation benchmarking and typed qualification of reproducible lesion programs"
 type: software
 version: 0.5.0
+doi: "10.5281/zenodo.22095993"
 authors:
   - family-names: "Liang"
     given-names: "Peng"

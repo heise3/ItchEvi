@@ -1,5 +1,7 @@
 # ItchEvi 0.5.0
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22095993.svg)](https://doi.org/10.5281/zenodo.22095993)
+
 ItchEvi is a failure-aware qualification engine for donor-level transcriptomic
 evidence. It asks whether a prespecified gene or program claim remains
 qualifiable after required evidence, stability and provenance gates. It does
@@ -39,6 +41,8 @@ frozen program banks, figure-generation scripts and their SHA256 manifest are
 attached to the GitHub release.
 
 Repository: https://github.com/heise3/ItchEvi
+
+Archived release: https://doi.org/10.5281/zenodo.22095993
 
 ## Install
 
