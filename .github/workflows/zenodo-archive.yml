@@ -29,7 +29,14 @@ jobs:
           if [[ -z "$doi" ]]; then
             search_url='https://zenodo.org/api/records/?q=title%3A%22ItchEvi%22&size=20&sort=newest'
             search_json="$(mktemp)"
-            curl --fail --silent --show-error "$search_url" --output "$search_json"
+            search_status="$(curl --silent --show-error --location \
+              --header 'Accept: application/json' --output "$search_json" \
+              --write-out '%{http_code}' "$search_url")"
+            printf 'ZENODO_SEARCH_HTTP=%s BYTES=%s\n' "$search_status" "$(wc -c < "$search_json")"
+            if [[ "$search_status" != "200" || ! -s "$search_json" ]]; then
+              echo "ZENODO_ARCHIVE_NOT_READY"
+              exit 1
+            fi
             doi="$(python - "$search_json" <<'PY'
           import json
           import sys
